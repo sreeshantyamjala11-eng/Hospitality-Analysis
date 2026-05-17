@@ -1,0 +1,25 @@
+create database dash;
+use dash;
+
+select * from fact_bookings where ratings_given = '';
+update fact_bookings
+set ratings_given = 0
+where ratings_given = '';
+
+select count(*) from fact_aggregated_bookings;
+
+###KPI Calculation
+
+##1.Total Booking
+select count(distinct booking_id) as Total_Bookings from fact_bookings;
+
+##2.Total Revenue
+select sum(revenue_realized) as Total_Revenue from fact_bookings;
+
+##3.Occupancy Rate
+select round(sum(successful_bookings)*100 / sum(capacity),2) 
+as Occupancy_Rate from fact_aggregated_bookings;
+
+##4.Cancellation Rating
+select round(sum(case when booking_status='Cancelled' then 1 else 0 end)*100/
+count(*),2)as cancellation_rate from fact_bookings;
